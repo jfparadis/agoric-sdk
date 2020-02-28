@@ -13,7 +13,7 @@ import { useApplicationContext } from '../contexts/Application';
 
 export default function Wallet() {
   const { state } = useApplicationContext();
-  const { purses } = state;
+  const { connected, purses } = state;
 
   return (
     <Card elevation={0}>
@@ -21,7 +21,9 @@ export default function Wallet() {
       <Divider />
 
       <List>
-        {Array.isArray(purses) && purses.length > 0 ? (
+        {connected &&
+          Array.isArray(purses) &&
+          purses.length > 0 &&
           purses.map(({ purseName, assayId, extent }) => (
             <ListItem key={purseName} value={purseName} divider>
               <ListItemText
@@ -29,10 +31,15 @@ export default function Wallet() {
                 secondary={`${extent} ${assayId}`}
               />
             </ListItem>
-          ))
-        ) : (
+          ))}
+        {connected && Array.isArray(purses) && purses.length === 0 && (
           <ListItem key={null} value={null}>
             No purses.
+          </ListItem>
+        )}
+        {!connected && (
+          <ListItem key={null} value={null}>
+            Not connected.
           </ListItem>
         )}
       </List>
